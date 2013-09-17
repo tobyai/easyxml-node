@@ -42,7 +42,6 @@ describe("Node EasyXML", function () {
           var json = require(file + ".json");
 
           var resp=easyXML.render(json)
-          console.log ("RESPONSE:", resp);
           assert.equal(resp, data, "EasyXML should create the correct XML from a JSON data structure.");
           assert.strictEqual(easyXML.render(json), data, "EasyXML should create the correct XML from a JSON data structure.");
 
