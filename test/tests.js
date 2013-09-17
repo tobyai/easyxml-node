@@ -13,17 +13,24 @@ describe("Node EasyXML", function () {
         "names1" : "should parse a JSON object with attrs into XML",
         "names2" : "should parse a JSON object with attrs and text node into XML",
         "singularizeChildren" : "should parse a JSON object without singularizeChildren to XML",
-        "singularizeChildren2" : "should parse a JSON object without singularizeChildren to XML (with object)"
+        "singularizeChildren2" : "should parse a JSON object without singularizeChildren to XML (with object)",
+        "no_wrapper" : "Should parse a JSON without adding a wrapper",
+        "no_wrapper2" : "Should parse a JSON without adding a wrapper"
       };
 
   Object.keys(should)
     .forEach(function(name){
       it(should[name], function (done) {
+        var options={}
         if (name === 'singularizeChildren' || name === 'singularizeChildren2') {
-          easyXML.configure({ singularizeChildren: false });
-        } else {
-          easyXML.configure({ singularizeChildren: true });
-        }
+          options.singularizeChildren= false ;
+        } 
+
+        if (name === 'no_wrapper'){//} || name === "no_wrapper2") {
+          options.rootElement = null
+        } 
+          
+        easyXML.configure(options);
 
         var file = __dirname + "/fixtures/" + name;
 
@@ -34,7 +41,9 @@ describe("Node EasyXML", function () {
 
           var json = require(file + ".json");
 
-          assert.equal(easyXML.render(json), data, "EasyXML should create the correct XML from a JSON data structure.");
+          var resp=easyXML.render(json)
+          console.log ("RESPONSE:", resp);
+          assert.equal(resp, data, "EasyXML should create the correct XML from a JSON data structure.");
           assert.strictEqual(easyXML.render(json), data, "EasyXML should create the correct XML from a JSON data structure.");
 
           done();

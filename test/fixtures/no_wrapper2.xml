@@ -1,0 +1,14 @@
+<payment_method>
+    <credit_card>
+        <first_name>Joe</first_name>
+        <last_name>Jones</last_name>
+        <number>5555555555554444</number>
+        <month>3</month>
+        <year>2032</year>
+    </credit_card>
+    <email>joey@example.com</email>
+    <data>
+        <my_payment_method_identifier>448</my_payment_method_identifier>
+        <some_other_things>Can be anything really</some_other_things>
+    </data>
+</payment_method>

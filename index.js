@@ -55,6 +55,8 @@ var EasyXml = function() {
     self.configure = function(config) {
         // should be merge, otherwise we lose defaults
         self.config = merge(self.config, config);
+        console.log("incoming settings:",config );
+        console.log("settings:",self.config );
     };
 
     /**
@@ -62,11 +64,33 @@ var EasyXml = function() {
      * Takes an object and returns an XML string
      */
     self.render = function(object, rootElementOverride) {
-        var xml = element(rootElementOverride || self.config.rootElement);
+        console.log("Root:", self.config.rootElement);
+        var root = rootElementOverride || self.config.rootElement;
+        console.log("parsing object:", object);
+        
+        if(root){
+            var xml = element(root);
+            parseChildElement(xml, object);
+        }
+        else{
+            var keys=Object.keys(object);
+            var key=keys[0]
+            var xml = element(key);
+            if (object[key] instanceof Array){
+                for(var i in object[key]){
+                    var item=object[key][i]
+                    console.log("parse list item:", item);
+                    parseChildElement(xml,item);
+                }
+            }
+            else{
+                console.log("parse hole:", object[key]);
+                parseChildElement(xml,object[key]);
+            }
 
-        parseChildElement(xml, object);
-
-        return new ElementTree(xml).write({
+        }
+        var tree = new ElementTree(xml);
+        return tree.write({
             xml_declaration: self.config.manifest,
             indent: self.config.indent
         });
@@ -86,10 +110,12 @@ var EasyXml = function() {
                     el = subElement(parentXmlNode, key);
                     for (var key in child) {
                         if (typeof child[key] === 'object') {
+                            console.log("0", key)
                             parseChildElement(el, child[key]);
                         } else {
-                            el = subElement(el, key);
-                            el.text = child[key].toString();
+                            console.log("1", key)
+                            var newel = subElement(el, key);
+                            newel.text = child[key].toString();
                         }
                     }
                     // parseChildElement(, child);
@@ -105,9 +131,11 @@ var EasyXml = function() {
                     }
                 } else if (child === null) {
                     // Null data, send an empty tag
+                    console.log("2")
                     el = subElement(parentXmlNode, key);
                 } else if (typeof child === 'object' && child.constructor && child.constructor.name && child.constructor.name === 'Date') {
                     // Date
+                    console.log("3")
                     el = subElement(parentXmlNode, key);
                     if (self.config.dateFormat === 'ISO') {
                         // ISO: YYYY-MM-DDTHH:MM:SS.mmmZ
@@ -130,12 +158,14 @@ var EasyXml = function() {
                     }
                 } else if (typeof child === 'object' && child.constructor && child.constructor.name && child.constructor.name === 'Array') {
                     // Array
+                    console.log("4")
                     el = subElement(parentXmlNode, key);
                     var subElementName = key.singular();
                     for (var key2 in child) {
                         // Check type of child element
                         if (child.hasOwnProperty(key2) && typeof child[key2] === 'object') {
                             var el2 = subElement(el, subElementName);
+                            console.log("5")
                             parseChildElement(el2, child[key2]);
                         } else {
                             // Just add element directly without parsing
@@ -145,6 +175,7 @@ var EasyXml = function() {
                     }
                 } else if (typeof child === 'object') {
                     // Object, go deeper
+                    console.log("6")
                     el = subElement(parentXmlNode, key);
                     parseChildElement(el, child);
                 } else if (typeof child === 'number') {

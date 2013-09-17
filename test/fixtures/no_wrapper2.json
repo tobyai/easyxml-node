@@ -1,0 +1,18 @@
+{
+   "payment_method":{
+      "credit_card":{
+         "first_name":"Joe",
+         "last_name":"Jones",
+         "number":"5555555555554444",
+         "month":"3",
+         "year":"2032"
+      },
+      "email":"joey@example.com",
+      "data":{
+         "my_payment_method_identifier":"448",
+         "extra_stuff":{
+            "some_other_things":"Can be anything really"
+         }
+      }
+   }
+}
