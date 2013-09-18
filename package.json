@@ -16,6 +16,10 @@
         {
             "name": "Joshua Kalis",
             "email": "JoshKalis@QuickenLoans.com"
+        },
+        {
+            "name": "Tobias Hoenisch",
+            "email": "tobias@hoenisch.at"
         }
     ],
     "dependencies": {
